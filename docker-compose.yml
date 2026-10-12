@@ -1,0 +1,34 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: alumni-postgres
+    environment:
+      POSTGRES_DB: alumni_db
+      POSTGRES_USER: alumni
+      POSTGRES_PASSWORD: alumni_dev_password
+    ports:
+      - "5432:5432"
+    volumes:
+      - alumni_postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U alumni -d alumni_db"]
+      interval: 5s
+      timeout: 3s
+      retries: 15
+  app:
+    build: .
+    container_name: alumni-searcher-api
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      DATABASE_URL: jdbc:postgresql://postgres:5432/alumni_db
+      DATABASE_USERNAME: alumni
+      DATABASE_PASSWORD: alumni_dev_password
+      PHANTOMBUSTER_API_KEY: ${PHANTOMBUSTER_API_KEY:-}
+      PHANTOMBUSTER_AGENT_ID: ${PHANTOMBUSTER_AGENT_ID:-}
+      PORT: 8080
+    ports:
+      - "8080:8080"
+volumes:
+  alumni_postgres_data:

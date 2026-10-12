@@ -1,0 +1,34 @@
+server:
+  port: ${PORT:8080}
+spring:
+  application:
+    name: alumni-linkedin-profile-searcher
+  datasource:
+    url: ${DATABASE_URL:jdbc:postgresql://localhost:5432/alumni_db}
+    username: ${DATABASE_USERNAME:alumni}
+    password: ${DATABASE_PASSWORD:alumni_dev_password}
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: update
+    open-in-view: false
+    properties:
+      hibernate:
+        format_sql: true
+  jackson:
+    default-property-inclusion: non_null
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html
+  api-docs:
+    path: /v3/api-docs
+phantombuster:
+  api-key: ${PHANTOMBUSTER_API_KEY:}
+  agent-id: ${PHANTOMBUSTER_AGENT_ID:}
+  launch-url: ${PHANTOMBUSTER_LAUNCH_URL:https://api.phantombuster.com/api/v2/agents/launch}
+logging:
+  level:
+    com.assignment.alumni: DEBUG
+    org.hibernate.SQL: DEBUG
+    org.hibernate.orm.jdbc.bind: TRACE
+    org.springframework.jdbc: DEBUG
